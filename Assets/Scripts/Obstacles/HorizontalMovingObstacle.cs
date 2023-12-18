@@ -4,27 +4,30 @@ namespace Obstacles
 {
     public class HorizontalMovingObstacle : MonoBehaviour
     {
-        [SerializeField] private float _duration = 2f;
+        [SerializeField] private float _speed = 10;
+        [SerializeField] private float _movementDelta = 3;
 
-        private Vector3 _start;
-        private Vector3 _end;
+        private Vector3 _left;
+        private Vector3 _right;
+
         private float _currentTime;
+        private float _oneWayTime;
+        private bool _isMovingRight;
 
-        private void Start()
+        private void Awake()
         {
-            var position = gameObject.transform.position;
+            var position = transform.position;
+            _left = new Vector3(position.x - _movementDelta, position.y, position.z);
+            _right = new Vector3(position.x + _movementDelta, position.y, position.z);
 
-            _start = new Vector3(position.x - 3, position.y, position.z);
-            _end = new Vector3(position.x + 3, position.y, position.z);
+            _oneWayTime = Vector3.Distance(_left, _right) / _speed;
         }
 
         private void Update()
         {
-            _currentTime += Time.deltaTime;
-
-            var progress = (Mathf.Sin(_currentTime) + 1) / _duration;
-            var newPosition = Vector3.Lerp(_start, _end, progress);
-            transform.position = newPosition;
+            _currentTime += _isMovingRight ? Time.deltaTime : -Time.deltaTime;
+            var progress = Mathf.PingPong(_currentTime, _oneWayTime) / _oneWayTime;
+            transform.position = Vector3.Lerp(_left, _right, progress);
         }
     }
 }

@@ -4,11 +4,11 @@ namespace Obstacles
 {
     public class RotatingObstacle : MonoBehaviour
     {
-        [SerializeField] private float _rotationSpeed = 45f;
+        [SerializeField] private float _rotationSpeed = 50;
 
         private void Update()
         {
-            transform.Rotate(Vector3.forward, _rotationSpeed * Time.deltaTime);
+            transform.Rotate( _rotationSpeed * Time.deltaTime * Vector3.forward, Space.World);
         }
     }
 }
